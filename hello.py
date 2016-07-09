@@ -1,4 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session
+import logging #for getting logs
+from logging.handlers import RotatingFileHandler # appends a nother size when updating the log
+
 #session for session handling
 #redirect send to another page
 #import function all the data that's pass from the client to the server
@@ -19,6 +22,8 @@ def login():
             return redirect(url_for('welcome'))
         else:
             error = "Incorrect username and password"
+            app.logger.warning("Incorrect username and password for user (%s)",
+                                request.form.get("username"))
     return render_template('login.html',error=error)
 @app.route("/logout")
 def logout():
@@ -40,5 +45,10 @@ def valid_login(username, password):
 if __name__ == '__main__':
     #app secret is used so that we can use flash..
     app.secret_key = "\xe0=\x0f\xba\x8fVN\x1b\x91F2\t\x05\xe2\x94\x91\x97sNB'P\xee\xd8"
+    #FOR LOGGING
+    handler = RotatingFileHandler('error.log', maxBytes=10000, backupCount=1)
+    handler.setLevel(logging.INFO)
+    app.logger.addHandler(handler)
+    #^FOR LOGGING
     app.debug = True
     app.run()
