@@ -1,13 +1,13 @@
-from flask import Flask, url_for
-#url_for generates urls programatically
+from flask import Flask, request
+#import function all the data that's pass from the client to the server
 
 app = Flask(__name__)
-@app.route("/profile/<username>")
-def show_user_profile(username):
-    return "User: %s" % username
-@app.route("/")
-def show_url_for():
-    return url_for('show_user_profile', username='jorge')
+@app.route("/login", methods=['GET'])
+def login(username):
+    if request.values:
+        return 'username is %s' % request.values['username']
+    else:
+        return '<form method="get" action="/login"><input type="text" name="username"/><p><button type="submit">Submit</button>'
 if __name__ == '__main__':
     app.debug = True
     app.run()
